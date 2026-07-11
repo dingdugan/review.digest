@@ -1,0 +1,43 @@
+name: Review digest
+
+on:
+  schedule:
+    # Every Monday 08:00 UTC. Edit to taste — https://crontab.guru
+    - cron: "0 8 * * 1"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write   # commit dedup state back to the repo
+  issues: write     # create the digest issue
+
+concurrency:
+  group: review-digest
+  cancel-in-progress: false
+
+jobs:
+  digest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Generate digest
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python -m reviewdigest
+
+      - name: Commit updated state
+        run: |
+          git config user.name "review-digest[bot]"
+          git config user.email "review-digest-bot@users.noreply.github.com"
+          git add state/
+          git diff --cached --quiet || git commit -m "chore: update review digest state"
+          git push

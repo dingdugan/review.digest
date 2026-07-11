@@ -1,0 +1,41 @@
+# reviewdigest configuration
+# Docs: see README.md
+
+# Your apps. Find the id in the App Store URL:
+# https://apps.apple.com/us/app/<slug>/id<THIS NUMBER>
+apps:
+  - id: 324684580          # example: Spotify — replace with your app
+    # name: My App         # optional; auto-resolved from the App Store when omitted
+
+# Storefronts to scan. A list of ISO country codes, or:
+#   major  -> top-20 storefronts by volume (good default)
+#   all    -> every App Store territory (~170; a run takes several minutes)
+countries: [us, gb, de, jp]
+
+# Language the digest is written in (review quotes get translated into it).
+language: English
+
+# How far back to look for new reviews on each run. Slightly more than the
+# run cadence so nothing falls through the cracks (dedup handles the overlap).
+lookback_days: 8
+
+# LLM used for clustering & summarizing. API key comes from repo secrets:
+#   ANTHROPIC_API_KEY (provider: anthropic) or OPENAI_API_KEY (provider: openai)
+# provider: openai works with any OpenAI-compatible endpoint via base_url.
+llm:
+  provider: anthropic
+  model: claude-opus-4-8      # best digest quality; claude-sonnet-5 is the budget option
+  # base_url: https://example.com/v1   # only for OpenAI-compatible providers
+
+# Where the digest goes.
+#   github-issue -> one issue per digest (default; needs no setup inside Actions)
+#   file         -> writes digests/digest-YYYY-MM-DD.md
+#   stdout       -> prints (handy locally)
+output:
+  type: github-issue
+  labels: [review-digest]
+
+# Advanced (defaults are fine):
+# max_pages_per_storefront: 5    # 20 reviews/page; 5 pages = up to 100/storefront/run
+# request_delay_seconds: 1.0     # politeness delay between App Store requests
+# state_path: state/state.json
