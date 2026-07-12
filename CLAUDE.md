@@ -43,6 +43,7 @@
 
 - [decision-scope-v1.md](docs/decision-scope-v1.md) — V1 范围决策快照（红军演习结论：iOS-only、GitHub Action 形态、多国聚合）
 - [research-data-layer.md](docs/research-data-layer.md) — 评论数据层实测（2026-07-10）：RSS 已死，改用 apps.apple.com 无鉴权 web API
+- [_archive/handoff-reviewdigest.md](docs/_archive/handoff-reviewdigest.md) — 2026-07-10 开工 handoff（已被 CLAUDE.md + checklist 取代，历史回查用）
 
 ## 项目特定上下文
 

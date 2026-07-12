@@ -75,6 +75,8 @@ def run(cfg: Config, *, dry_run: bool, no_llm: bool, force: bool, output_overrid
                 )
                 if not app.name and info.get("name"):
                     app.name = info["name"]
+                if app.name:
+                    state.setdefault("names", {})[app.id] = app.name
 
         app_name = app.name or f"App {app.id}"
         app_names.append(app_name)
@@ -119,21 +121,27 @@ def run(cfg: Config, *, dry_run: bool, no_llm: bool, force: bool, output_overrid
         print(f"\n{'=' * 60}\n{title}\n{'=' * 60}\n")
         print(body)
     elif output_type == "file":
-        os.makedirs(cfg.output.path, exist_ok=True)
-        out_path = os.path.join(cfg.output.path, f"digest-{now.date().isoformat()}.md")
-        with open(out_path, "w", encoding="utf-8") as f:
-            f.write(f"<!-- {title} -->\n\n{body}\n")
-        log.info("digest written to %s", out_path)
-        print(out_path)
+        print(save_digest_file(cfg.output.path, now.date().isoformat(), title, body))
     elif output_type == "github-issue":
         url = create_github_issue(title, body, cfg.output.labels)
         log.info("issue created: %s", url)
         print(url)
+        # Keep an in-repo copy — the dashboard site is built from these.
+        save_digest_file(cfg.output.path, now.date().isoformat(), title, body)
 
     if not dry_run:
         state["last_run"] = now.isoformat()
         state_mod.save(state, cfg.state_path)
     return 0
+
+
+def save_digest_file(dir_path: str, date_str: str, title: str, body: str) -> str:
+    os.makedirs(dir_path, exist_ok=True)
+    out_path = os.path.join(dir_path, f"digest-{date_str}.md")
+    with open(out_path, "w", encoding="utf-8") as f:
+        f.write(f"<!-- {title} -->\n\n{body}\n")
+    log.info("digest written to %s", out_path)
+    return out_path
 
 
 def create_github_issue(title: str, body: str, labels: list[str]) -> str:

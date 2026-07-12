@@ -4,7 +4,7 @@
 # Your apps. Find the id in the App Store URL:
 # https://apps.apple.com/us/app/<slug>/id<THIS NUMBER>
 apps:
-  - id: 324684580          # example: Spotify — replace with your app
+  - id: 835599320          # TikTok — replace with your app
     # name: My App         # optional; auto-resolved from the App Store when omitted
 
 # Storefronts to scan. A list of ISO country codes, or:

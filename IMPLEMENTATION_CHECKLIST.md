@@ -15,15 +15,39 @@
 
 ## Active
 
-- [ ] Dogfood: 真实 app 端到端跑通一份周报（LLM 模式）
-      验收: 产出的周报 markdown 人读质量过关，评论翻译正确
-      证据: <待用户提供 ANTHROPIC_API_KEY 后运行 `ANTHROPIC_API_KEY=... python3 -m reviewdigest --dry-run`；本地无任何 LLM key，无法代跑（2026-07-10 已确认 env 无 key）。raw 模式端到端已验证，见 Done>
-
 - [ ] 发布前：确认项目名可用性 + README 放示例周报截图 + 建 demo 仓库（handoff D5/D7，非 MVP 阻塞项）
       验收: GitHub 上创建 template repo，Actions 实际跑通建 Issue
       证据: <填 repo URL>
 
 ## Done
+
+- [x] 实现 reviewdigest/site.py 静态仪表盘生成器（index + 每期周报页 + 评分趋势 SVG）
+      验收: 从 digests/*.md + state/state.json 生成 _site/；无周报时渲染空态；深色模式可读
+      证据: tests/test_site.py 5 个测试全绿；本地 headless 浏览器截图验证（index 趋势图三国线 + 周报页完整渲染，console 无错误）
+
+- [x] 实现 site/setup.html 配置向导（搜 app 名出 id、选国家/语言、生成 yaml）
+      验收: 纯静态无依赖；iTunes 搜索跨域可用（CORS 或 JSONP）；生成的 yaml 可直接粘贴使用
+      证据: iTunes search API CORS 实测通过（Access-Control-Allow-Origin 回显）；headless 浏览器实测搜 "overcast" 出 5 结果、点击后 YAML 生成 id 888422857 带名字注释
+
+- [x] 修改 main.py + .gitignore 让周报 markdown 历史入库（digests/ 提交进仓库）
+      验收: 非 dry-run 每次运行都落一份 digests/digest-日期.md；.gitignore 不再忽略
+      证据: reviewdigest/main.py save_digest_file（github-issue 输出也落盘）；.gitignore 改为忽略 _site/
+
+- [x] 修改 .github/workflows/digest.yml 加 Pages 构建与部署 job
+      验收: digest job 提交 digests/+state/；site job 上传 artifact 并 deploy-pages；未开 Pages 时不阻塞周报
+      证据: .github/workflows/digest.yml（deploy-pages job 带 continue-on-error）；yaml.safe_load 校验通过
+
+- [x] 更新 README（启用 Pages 的一步设置 + 仪表盘/向导截图位）
+      验收: 用户照 README 能开出仪表盘
+      证据: README.md "Bonus: your review dashboard" 段（Settings → Pages → GitHub Actions 一步 + 未启用不影响周报说明）
+
+- [x] Dogfood: 用已有 TikTok 周报本地构建站点并在浏览器验证
+      验收: index 可见趋势图与周报列表，周报页渲染正确
+      证据: headless 浏览器三页截图验证（dash_index / dash_digest / dash_setup），修复 app 名显示与重复 meta 两处后复验通过
+
+- [x] Dogfood: 真实 app 端到端跑通一份周报（LLM 模式）
+      验收: 产出的周报 markdown 人读质量过关，评论翻译正确
+      证据: digests/digest-2026-07-12.md（TikTok 237 条，claude-opus-4-8）；3/3 引用抽查与原始评论逐字吻合，DE 评论正确翻译并保留国家标
 
 - [x] 验证评论数据层并写 docs/research-data-layer.md（D1 最大风险）
       验收: 真实 app id 多国抓取实测有结论，RSS 死活有定论，选定方案写入文档

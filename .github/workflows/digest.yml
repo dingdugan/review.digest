@@ -7,8 +7,10 @@ on:
   workflow_dispatch: {}
 
 permissions:
-  contents: write   # commit dedup state back to the repo
+  contents: write   # commit dedup state + digest history back to the repo
   issues: write     # create the digest issue
+  pages: write      # publish the dashboard site
+  id-token: write   # required by actions/deploy-pages
 
 concurrency:
   group: review-digest
@@ -34,10 +36,32 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: python -m reviewdigest
 
-      - name: Commit updated state
+      - name: Commit updated state and digest history
         run: |
           git config user.name "review-digest[bot]"
           git config user.email "review-digest-bot@users.noreply.github.com"
-          git add state/
+          git add state/ digests/
           git diff --cached --quiet || git commit -m "chore: update review digest state"
           git push
+
+      - name: Build dashboard site
+        run: python -m reviewdigest.site
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  # Publishes the dashboard. Fails harmlessly until you enable Pages once:
+  # repo Settings → Pages → Source: "GitHub Actions". The digest itself is
+  # unaffected either way.
+  deploy-pages:
+    needs: digest
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

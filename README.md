@@ -43,12 +43,22 @@ Commercial tools like AppFollow or Appfigures do this for ~$199/month. If you're
 
 From then on it runs every Monday 08:00 UTC (edit the cron in [.github/workflows/digest.yml](.github/workflows/digest.yml)).
 
+## Bonus: your review dashboard (GitHub Pages)
+
+Enable it once — repo **Settings → Pages → Source: "GitHub Actions"** — and every digest run also publishes a static dashboard at `https://<you>.github.io/<repo>/`:
+
+- **Store rating trend** per storefront over time (built from the committed rating snapshots)
+- **Every past digest** as a browsable web page
+- **Setup wizard** (`/setup.html`) — search your app by name, tick storefronts, and it generates the `reviewdigest.yaml` for you. No YAML knowledge needed.
+
+Skipping this step is fine: the Pages deploy job fails quietly and the weekly Issue is unaffected.
+
 ## How it works
 
 - **Fetch** — reviews come from Apple's first-party App Store web API (the same one apps.apple.com uses), sorted newest-first, per storefront. No Apple credentials needed. Store ratings come from the official iTunes lookup API.
 - **Dedup** — seen review ids are kept in [state/state.json](state/state.json) and committed back by the workflow, so a review is never reported twice. No database.
 - **Analyze** — new reviews go to the LLM with a prompt tuned for operator-grade honesty: counts must come from the data, quotes must be real, empty sections say "None this week."
-- **Deliver** — one GitHub Issue per digest, labeled `review-digest`. Weeks with zero new reviews are skipped.
+- **Deliver** — one GitHub Issue per digest, labeled `review-digest`. Weeks with zero new reviews are skipped. A copy of each digest lands in [digests/](digests/), which feeds the dashboard.
 
 No LLM key? It still works — you get the stats block plus a raw listing of new reviews grouped by rating (`--no-llm` mode).
 

@@ -5,7 +5,8 @@ Layout of state/state.json:
   "version": 1,
   "last_run": "2026-07-10T12:00:00+00:00",
   "seen": {"<app_id>:<country>": ["<review_id>", ...]},      # newest first, capped
-  "ratings": {"<app_id>:<country>": [{"date", "average_rating", "rating_count"}, ...]}
+  "ratings": {"<app_id>:<country>": [{"date", "average_rating", "rating_count"}, ...]},
+  "names": {"<app_id>": "<resolved app name>"}               # for the dashboard site
 }
 """
 
@@ -29,6 +30,7 @@ def load(path: str) -> dict:
         state = json.load(f)
     state.setdefault("seen", {})
     state.setdefault("ratings", {})
+    state.setdefault("names", {})
     return state
 
 
