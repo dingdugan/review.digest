@@ -15,8 +15,8 @@
 
 ## Active
 
-- [ ] 发布推广：README 放真实截图（仪表盘 + Issue 周报）+ 选定渠道发布（Show HN / X / 少数派 / V2EX）
-      验收: README 有图；至少一个渠道发出
+- [ ] 发布推广：选定渠道发布（Show HN / X / 少数派 / V2EX）
+      验收: 至少一个渠道发出
       证据: <填链接>
 
 - [ ] 用户侧：rotate 曾在聊天中暴露的 Anthropic key，把新 key 加为 repo secret ANTHROPIC_API_KEY
@@ -24,6 +24,10 @@
       证据: <填 Issue 链接>
 
 ## Done
+
+- [x] 仓库对外文案全翻新：README 重写（8 分钟上手旅程 + 真实截图 + 真实周报摘录）+ CONTRIBUTING.md + 仓库描述/topics/homepage
+      验收: 新访客一眼明白产品是什么、怎么用
+      证据: README.md / CONTRIBUTING.md / .github/assets/{dashboard,setup-wizard}.png；gh repo edit 已生效（13 个 topics + homepage 指向 Pages）
 
 - [x] 发布：公开 template 仓库 + Actions 全链路跑通 + Pages 上线（handoff D5/D7）
       验收: GitHub 上创建 template repo，Actions 实际跑通建 Issue

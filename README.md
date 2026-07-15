@@ -1,102 +1,137 @@
-# reviewdigest
+# 📱 reviewdigest
 
-**Weekly App Store review digests, delivered as GitHub Issues. Zero servers, zero cost*, open source.**
+**Your App Store reviews, read for you. Every Monday, as a GitHub Issue.**
 
-Every Monday, this repo fetches your app's newest App Store reviews across every storefront you care about, has an LLM cluster them into *complaint themes, crashes, feature requests, and reviews worth replying to* — translated into your language — and opens a GitHub Issue with the result.
+Fork this template, fill in your app id, add your own LLM API key — and every week an AI reads your app's newest reviews across every country's App Store, clusters them into *complaint themes, crashes, feature requests, and reviews worth replying to*, translates them into your language, and delivers the briefing as a GitHub Issue.
 
-> *\*Except LLM API usage — a typical weekly digest costs a few cents to ~$1 depending on review volume and model.*
+**Zero servers. Zero database. Zero subscription.** Runs entirely on GitHub Actions in your own repo, with your own API key. Commercial tools charge ~$199/month for this; here the only cost is your LLM usage (typically a few cents to ~$1 per week).
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+
+---
+
+## What a digest looks like
+
+Real output (from a run against TikTok's public reviews, 237 new reviews across 3 storefronts):
+
+> **237 new reviews** across 3 storefronts · average 2.5★
+>
+> ### 🚨 Negative themes
+>
+> **Unjustified bans, strikes & age restrictions** (~30, US/GB/DE) — Automated moderation banning users who claim no wrongdoing; opaque, bot-driven appeals that repeat the same reply.
+> > "Automated moderation warned me for no reason (I posted the German national flag) and this led to a full account ban; my appeal was also rejected." [DE]
+>
+> ### 🐛 Crashes & bugs
+>
+> - **Black screen / logo hang on launch, then crash** (~20, US/GB/DE) — Started after a recent update. Heavily concentrated on iPhone 7 / 7 Plus and iPads on iOS 15.8 / 15.8.8 …
+>
+> ### 💬 Worth replying
+>
+> - "Black screen on launch since the update, iPhone 6s iOS 15.8.8... I need this for back to school." [US ★5] — *Acknowledge the iOS 15.8.x/older-device crash; give timeline or workaround.*
+
+Every section is grounded in the actual reviews — counts are derived from the data, quotes are real (translated, with the origin storefront tagged), and empty sections say "None this week."
+
+Plus a **free dashboard** on GitHub Pages — rating trends per storefront and every past digest as a web page:
+
+![Dashboard](.github/assets/dashboard.png)
+
+---
+
+## Get your first digest in ~8 minutes
+
+You need: a GitHub account, an app on the App Store (yours or anyone's), and an LLM API key.
+
+### 1. Copy this template — 30 seconds
+
+Click **Use this template → Create a new repository** (top right). Private is fine. You get an independent copy that you fully own — not a fork.
+
+### 2. Fill in your app — 2 minutes
+
+Edit `reviewdigest.yaml` in your new repo (the pencil icon on github.com works — no need to clone):
+
+```yaml
+apps:
+  - id: 1234567890        # ← the number from your App Store URL:
+                          #   https://apps.apple.com/us/app/<name>/id1234567890
+countries: [us, gb, de, jp]   # or `major` (top 20) or `all` (~170)
+language: English             # digest language — review quotes get translated into it
 ```
-📱 Review Digest · Jul 3 – Jul 10, 2026 · MyApp · 47 new reviews
 
-## MyApp
-47 new reviews across 12 storefronts · average 3.2★
-5★ ███████░░░░░░░░░░░░░ 18
-1★ ██████░░░░░░░░░░░░░░ 14
-...
+**Prefer clicking to typing?** Use the [setup wizard](https://dingdugan.github.io/review.digest/setup.html) — search your app by name, tick storefronts, copy the generated file:
 
-### 🚨 Negative themes
-**Sync stopped working after 2.4.0** (9 reviews, US/DE/JP) — users report ...
-> "Since the update my notes vanish between devices" [DE]
+![Setup wizard](.github/assets/setup-wizard.png)
 
-### 💬 Worth replying
-> "I'd pay double if export worked — currently forced to screenshot" [GB ★2]
-> Suggested angle: export ships in 2.5, offer beta access ...
-```
+### 3. Add your own API key — 2 minutes
 
-Commercial tools like AppFollow or Appfigures do this for ~$199/month. If you're an indie developer, forking a repo is free.
+In your repo: **Settings → Secrets and variables → Actions → New repository secret**
 
-## Get your first digest in 5 minutes
+- Name: `ANTHROPIC_API_KEY`, value: your key from [console.anthropic.com](https://console.anthropic.com)
+- Or `OPENAI_API_KEY` with `llm.provider: openai` in the config — any OpenAI-compatible endpoint works via `llm.base_url`
 
-1. **Use this template** → create your own repo (private is fine).
-2. **Edit `reviewdigest.yaml`** — set your app id (the number after `id` in your App Store URL) and the storefronts you want:
-   ```yaml
-   apps:
-     - id: 1234567890
-   countries: [us, gb, de, jp]   # or `major` (top 20), or `all`
-   language: English             # digest language; reviews get translated into it
-   ```
-3. **Add your LLM key** — repo *Settings → Secrets and variables → Actions → New repository secret*:
-   - `ANTHROPIC_API_KEY` (default), or `OPENAI_API_KEY` with `llm.provider: openai`
-   - Any OpenAI-compatible endpoint works via `llm.base_url`
-4. **Run it** — *Actions → Review digest → Run workflow*. Your first digest appears as an issue a couple of minutes later.
+The key lives encrypted in *your* repo; usage bills to *your* account. **No key? It still works** — you get the stats plus a raw review listing instead of the AI analysis.
 
-From then on it runs every Monday 08:00 UTC (edit the cron in [.github/workflows/digest.yml](.github/workflows/digest.yml)).
+### 4. Run it — 3 minutes of waiting
 
-## Bonus: your review dashboard (GitHub Pages)
+**Actions tab → Review digest → Run workflow.** A couple of minutes later your first digest appears under **Issues**, labeled `review-digest`.
 
-Enable it once — repo **Settings → Pages → Source: "GitHub Actions"** — and every digest run also publishes a static dashboard at `https://<you>.github.io/<repo>/`:
+### 5. (Optional) Turn on the dashboard — 30 seconds
 
-- **Store rating trend** per storefront over time (built from the committed rating snapshots)
-- **Every past digest** as a browsable web page
-- **Setup wizard** (`/setup.html`) — search your app by name, tick storefronts, and it generates the `reviewdigest.yaml` for you. No YAML knowledge needed.
+**Settings → Pages → Source: "GitHub Actions".** From the next run on, `https://<you>.github.io/<repo>/` serves your rating-trend charts and digest archive. Skipping this is fine — the weekly Issue is unaffected.
 
-Skipping this step is fine: the Pages deploy job fails quietly and the weekly Issue is unaffected.
+### Done — now do nothing
 
-## How it works
+Every Monday 08:00 UTC (edit the cron in [.github/workflows/digest.yml](.github/workflows/digest.yml) to taste), a new Issue arrives. Read it in 5 minutes, know what your users are angry about, what crashed, and who deserves a reply. Discuss in the Issue, link fixes, @ your team.
 
-- **Fetch** — reviews come from Apple's first-party App Store web API (the same one apps.apple.com uses), sorted newest-first, per storefront. No Apple credentials needed. Store ratings come from the official iTunes lookup API.
-- **Dedup** — seen review ids are kept in [state/state.json](state/state.json) and committed back by the workflow, so a review is never reported twice. No database.
-- **Analyze** — new reviews go to the LLM with a prompt tuned for operator-grade honesty: counts must come from the data, quotes must be real, empty sections say "None this week."
-- **Deliver** — one GitHub Issue per digest, labeled `review-digest`. Weeks with zero new reviews are skipped. A copy of each digest lands in [digests/](digests/), which feeds the dashboard.
+---
 
-No LLM key? It still works — you get the stats block plus a raw listing of new reviews grouped by rating (`--no-llm` mode).
+## Configuration reference
+
+All options live in [reviewdigest.yaml](reviewdigest.yaml), documented inline. Highlights:
+
+| Key | Default | Notes |
+|---|---|---|
+| `apps` | — | one or more App Store app ids; names auto-resolve |
+| `countries` | `[us]` | storefront codes, `major` (top 20), or `all` (~170) |
+| `language` | `English` | digest output language; quotes translated |
+| `lookback_days` | `8` | window scanned per run (overlap is deduped) |
+| `llm.provider` | `anthropic` | `anthropic` or `openai` (any compatible endpoint via `base_url`) |
+| `llm.model` | `claude-opus-4-8` | `claude-sonnet-5` is the budget option |
+| `output.type` | `github-issue` | or `file` / `stdout` |
 
 ## Run locally
 
 ```bash
 pip install -r requirements.txt
 python -m reviewdigest --dry-run            # full digest to stdout (needs LLM key in env)
-python -m reviewdigest --dry-run --no-llm   # no key needed: stats + raw review listing
-python -m reviewdigest --output file        # writes digests/digest-YYYY-MM-DD.md
+python -m reviewdigest --dry-run --no-llm   # free: stats + raw review listing
+python -m reviewdigest.site                 # build the dashboard into _site/
 ```
 
-Useful flags: `--force` (produce a digest even with 0 new reviews), `--config path`, `-v`.
+Flags: `--force` (digest even with 0 new reviews), `--config path`, `--output stdout|file|github-issue`, `-v`.
 
-## Configuration reference
+## How it works
 
-See the comments in [reviewdigest.yaml](reviewdigest.yaml) — every option is documented there. Highlights:
+1. **Fetch** — reviews come from Apple's first-party App Store web API (the same one apps.apple.com uses), newest-first, per storefront. No Apple credentials needed. Store ratings come from the official iTunes lookup API.
+2. **Dedup** — seen review ids live in [state/](state/) and get committed back by the workflow. A review is never reported twice. No database.
+3. **Analyze** — new reviews go to the LLM with a prompt tuned for operator-grade honesty: counts from the data, real quotes only, no invented numbers.
+4. **Deliver** — one Issue per digest; a markdown copy lands in [digests/](digests/), which feeds the Pages dashboard. Weeks with zero new reviews are skipped.
 
-| Key | Default | Notes |
-|---|---|---|
-| `apps` | — | one or more App Store app ids; names auto-resolve |
-| `countries` | `[us]` | list of storefront codes, `major` (top 20), or `all` (~170) |
-| `language` | `English` | digest output language; quotes translated |
-| `lookback_days` | `8` | window scanned per run (overlap is deduped) |
-| `llm.provider` | `anthropic` | `anthropic` or `openai` (any OpenAI-compatible endpoint via `base_url`) |
-| `llm.model` | `claude-opus-4-8` | `claude-sonnet-5` is the budget option |
-| `output.type` | `github-issue` | or `file` / `stdout` |
+## FAQ & caveats
 
-## Caveats
+**Is this official?** The review endpoint is Apple's own web API but undocumented. If Apple changes it, the fetch layer is isolated in [reviewdigest/fetch.py](reviewdigest/fetch.py) and easy to swap (App Store Connect API is the documented fallback for your own apps).
 
-- The review endpoint is Apple's own web API but not officially documented; if Apple changes it, the fetch layer is isolated in [reviewdigest/fetch.py](reviewdigest/fetch.py) and easy to swap (App Store Connect API is the documented fallback for your own apps).
-- Reviews per storefront per run are capped at `max_pages_per_storefront × 20` (default 100). Very high-volume apps should raise it or run more often.
-- iOS only for now. Google Play is out of scope for V1 (its API requires developer verification and a service account).
+**How many reviews can it see?** Up to `max_pages_per_storefront × 20` per storefront per run (default 100). Very high-volume apps should raise it or run more often.
+
+**Android?** iOS only for now. Google Play's API requires developer verification and a service account — PRs welcome.
+
+**Can I watch competitors?** Yes — any public app id works. Reading what users complain about in competing apps is a feature list waiting to happen.
+
+**Privacy?** Everything runs in your repo with your keys. Review text goes to your chosen LLM provider and nowhere else.
 
 ## Contributing
 
-Email/Telegram/Slack outputs, Google Play support, and trend charts are welcome as PRs — the output layer is a single function in [reviewdigest/main.py](reviewdigest/main.py).
+Email/Telegram/Slack outputs, Google Play, trend improvements — see [CONTRIBUTING.md](CONTRIBUTING.md). The output layer is a single function; the fetch layer is one file.
 
 ## License
 
-MIT
+[MIT](LICENSE)
