@@ -2,6 +2,8 @@
 
 **Your App Store reviews, read for you. Every Monday, as a GitHub Issue.**
 
+English | [简体中文](README.zh-CN.md)
+
 Fork this template, fill in your app id, add your own LLM API key — and every week an AI reads your app's newest reviews across every country's App Store, clusters them into *complaint themes, crashes, feature requests, and reviews worth replying to*, translates them into your language, and delivers the briefing as a GitHub Issue.
 
 **Zero servers. Zero database. Zero subscription.** Runs entirely on GitHub Actions in your own repo, with your own API key. Commercial tools charge ~$199/month for this; here the only cost is your LLM usage (typically a few cents to ~$1 per week).
