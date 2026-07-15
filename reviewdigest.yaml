@@ -1,11 +1,13 @@
 # reviewdigest configuration
 # Docs: see README.md
 
-# Your apps. Find the id in the App Store URL:
-# https://apps.apple.com/us/app/<slug>/id<THIS NUMBER>
+# ⬇️ FILL THIS IN — your app's id, from its App Store URL:
+#    https://apps.apple.com/us/app/<slug>/id<THIS NUMBER>
+# (or use the setup wizard to generate this whole file — see README)
 apps:
-  - id: 835599320          # TikTok — replace with your app
-    # name: My App         # optional; auto-resolved from the App Store when omitted
+  - id: YOUR_APP_ID
+  # - id: 888422857        # monitoring several apps? add more list items
+  # name: My App           # optional; auto-resolved from the App Store when omitted
 
 # Storefronts to scan. A list of ISO country codes, or:
 #   major  -> top-20 storefronts by volume (good default)

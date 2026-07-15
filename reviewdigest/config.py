@@ -73,11 +73,13 @@ def _parse_apps(raw) -> list[AppConfig]:
             name = entry.get("name")
         else:
             app_id, name = entry, None
+        raw = app_id if app_id is not None else entry
         app_id = str(app_id).strip().lstrip("id") if app_id is not None else ""
         if not app_id.isdigit():
             raise ConfigError(
-                f"App id {entry!r} is not a numeric App Store id. "
-                "Find it in your App Store URL: https://apps.apple.com/us/app/<slug>/id<NUMBER>"
+                f"App id {str(raw)!r} is not a numeric App Store id. "
+                "Edit `apps:` in reviewdigest.yaml — the id is the number in your App Store URL: "
+                "https://apps.apple.com/us/app/<slug>/id<NUMBER>"
             )
         apps.append(AppConfig(id=app_id, name=name))
     return apps

@@ -195,6 +195,14 @@ def main(argv: list[str] | None = None) -> int:
     try:
         cfg = load_config(args.config)
     except ConfigError as e:
+        if "YOUR_APP_ID" in str(e):
+            # Fresh template that hasn't been configured yet — not an error.
+            print(
+                "reviewdigest isn't configured yet: edit `apps:` in reviewdigest.yaml "
+                "with your App Store app id (see README, or use the setup wizard). "
+                "Skipping this run."
+            )
+            return 0
         print(f"Config error: {e}", file=sys.stderr)
         return 2
 

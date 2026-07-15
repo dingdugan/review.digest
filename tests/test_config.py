@@ -45,3 +45,11 @@ def test_unsupported_provider(tmp_path):
 def test_non_numeric_app_id(tmp_path):
     with pytest.raises(ConfigError, match="numeric"):
         config_mod.load(_write(tmp_path, "apps: [myapp]\ncountries: [us]\n"))
+
+
+def test_placeholder_app_id_exits_zero_not_error(tmp_path, capsys):
+    from reviewdigest.main import main
+    cfg = tmp_path / "reviewdigest.yaml"
+    cfg.write_text("apps: [YOUR_APP_ID]\ncountries: [us]\n", encoding="utf-8")
+    assert main(["--config", str(cfg), "--dry-run"]) == 0
+    assert "isn't configured yet" in capsys.readouterr().out
