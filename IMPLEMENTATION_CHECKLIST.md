@@ -15,11 +15,19 @@
 
 ## Active
 
-- [ ] 发布前：确认项目名可用性 + README 放示例周报截图 + 建 demo 仓库（handoff D5/D7，非 MVP 阻塞项）
-      验收: GitHub 上创建 template repo，Actions 实际跑通建 Issue
-      证据: <填 repo URL>
+- [ ] 发布推广：README 放真实截图（仪表盘 + Issue 周报）+ 选定渠道发布（Show HN / X / 少数派 / V2EX）
+      验收: README 有图；至少一个渠道发出
+      证据: <填链接>
+
+- [ ] 用户侧：rotate 曾在聊天中暴露的 Anthropic key，把新 key 加为 repo secret ANTHROPIC_API_KEY
+      验收: 下一次 Actions 运行产出 LLM 分析版周报（非 raw 列表）
+      证据: <填 Issue 链接>
 
 ## Done
+
+- [x] 发布：公开 template 仓库 + Actions 全链路跑通 + Pages 上线（handoff D5/D7）
+      验收: GitHub 上创建 template repo，Actions 实际跑通建 Issue
+      证据: https://github.com/dingdugan/review.digest（isTemplate=true, MIT LICENSE）；run 29456366459 全绿；Issue #1（239 条 raw 周报）+ bot 回写 state commit；https://dingdugan.github.io/review.digest/ 实测 200 并渲染两期周报列表
 
 - [x] 实现 reviewdigest/site.py 静态仪表盘生成器（index + 每期周报页 + 评分趋势 SVG）
       验收: 从 digests/*.md + state/state.json 生成 _site/；无周报时渲染空态；深色模式可读
