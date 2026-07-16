@@ -5,3 +5,4 @@ __pycache__/
 _site/
 .DS_Store
 .gstack/
+*.local.yaml

@@ -15,9 +15,8 @@
 
 ## Active
 
-- [ ] 发布推广：选定渠道发布（Show HN / X / 少数派 / V2EX）
-      验收: 至少一个渠道发出
-      证据: <填链接>
+- [~] 发布推广：选定渠道发布（Show HN / X / 少数派 / V2EX）
+      2026-07-15 用户拍板不推广，个人项目做着玩但保持质量标准，此条划掉
 
 - [ ] 用户侧：rotate 曾在聊天中暴露的 Anthropic key，把新 key 加为 repo secret ANTHROPIC_API_KEY
       验收: 下一次 Actions 运行产出 LLM 分析版周报（非 raw 列表）
